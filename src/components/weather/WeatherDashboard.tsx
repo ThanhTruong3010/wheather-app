@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useWeather } from "@/contexts/WeatherContext";
 import { WeatherWidget } from "./WeatherWidget";
@@ -79,7 +79,7 @@ export function WeatherDashboard() {
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-20"
               >
                 {widgets.map((widget, index) => (
                   <WeatherWidget

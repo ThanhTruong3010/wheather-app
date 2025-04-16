@@ -56,12 +56,8 @@ export function WeatherWidget({ widget, data, index }: WeatherWidgetProps) {
     return (
       <Draggable draggableId={widget.id} index={index}>
         {(provided) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            className="mb-4"
-          >
-            <Card className="w-full md:w-80 bg-card/90 backdrop-blur-sm">
+          <div ref={provided.innerRef} {...provided.draggableProps}>
+            <Card className="w-full bg-card/90 backdrop-blur-sm">
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <div {...provided.dragHandleProps} className="cursor-grab">
                   <GripVertical className="h-5 w-5 text-muted-foreground" />
@@ -118,11 +114,10 @@ export function WeatherWidget({ widget, data, index }: WeatherWidgetProps) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="mb-4"
         >
           <Card
             className={cn(
-              "w-full md:w-80 bg-card/90 backdrop-blur-sm transition-all duration-200",
+              "w-full bg-card/90 backdrop-blur-sm transition-all duration-200",
               (isLoading || loadingWidgets[widget.id]) && "opacity-70"
             )}
           >

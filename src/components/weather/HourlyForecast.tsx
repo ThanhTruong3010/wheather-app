@@ -15,7 +15,7 @@ export function HourlyForecastView({
     <div className={`w-full ${className || ""}`}>
       <h3 className="text-sm font-medium mb-2">Today's Forecast</h3>
       <div className="w-full whitespace-nowrap overflow-x-auto">
-        <div className="flex space-x-4 pb-2">
+        <div className="flex justify-between space-x-4 pb-2">
           {hourlyData.map((hour, index) => (
             <div
               key={index}

@@ -6,6 +6,7 @@ import {
 } from "@/services/weatherService";
 import { useToast } from "@/components/ui/use-toast";
 import { transformWeatherData } from "@/lib/utils";
+import { DEFAULT_TIME_INTERVAL } from "@/constants/wheather";
 
 interface WeatherContextType {
   widgets: WidgetConfig[];
@@ -35,14 +36,6 @@ interface WeatherContextType {
 
 const WeatherContext = createContext<WeatherContextType | undefined>(undefined);
 
-const DEFAULT_TIME_INTERVAL = 5 * 60 * 1000; // 5 minutes
-const DEFAULT_LOCATION = {
-  city: "Singapore",
-  country: "SG",
-  lat: 1.3521,
-  lon: 103.8198,
-};
-
 export function WeatherProvider({ children }: { children: React.ReactNode }) {
   const [widgets, setWidgets] = useState<WidgetConfig[]>([]);
   const [weatherData, setWeatherData] = useState<Record<string, WeatherData>>(
@@ -57,36 +50,16 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
   // Load widgets from localStorage on initial render
   useEffect(() => {
     const savedWidgets = localStorage.getItem("weatherWidgets");
-    if (savedWidgets) {
-      try {
-        const parsedWidgets = JSON.parse(savedWidgets);
-        setWidgets(parsedWidgets);
-
-        // Fetch weather data for each saved widget
-        parsedWidgets.forEach((widget: WidgetConfig) => {
-          refreshWeatherDataForWidget(widget.id, widget.city);
-        });
-      } catch (error) {
-        console.error("Failed to parse saved widgets", error);
-      }
-    } else {
-      // Default widget for Singapore if no saved widgets
-      // const defaultWidget: WidgetConfig = {
-      //   id: "default-singapore",
-      //   city: DEFAULT_LOCATION.city,
-      //   position: { x: 0, y: 0 },
-      //   forecastDays: 7,
-      //   isHourlyVisible: true,
-      //   latitude: DEFAULT_LOCATION.lat,
-      //   longitude: DEFAULT_LOCATION.lon,
-      // };
-      // setWidgets([defaultWidget]);
-      // Fetch default Singapore weather
-      // addWidget(
-      //   DEFAULT_LOCATION.city,
-      //   DEFAULT_LOCATION.lat,
-      //   DEFAULT_LOCATION.lon
-      // );
+    if (!savedWidgets?.length) return;
+    try {
+      const parsedWidgets = JSON.parse(savedWidgets);
+      setWidgets(parsedWidgets);
+      // Fetch weather data for each saved widget
+      parsedWidgets.forEach((widget: WidgetConfig) => {
+        refreshWeatherDataForWidget(widget);
+      });
+    } catch (error) {
+      console.error("Failed to parse saved widgets", error);
     }
   }, []);
 
@@ -103,68 +76,22 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(refreshInterval);
   }, [widgets]);
 
-  const refreshWeatherDataForWidget = async (
-    widgetId: string,
-    city: string
-  ) => {
+  const refreshWeatherDataForWidget = async ({
+    latitude,
+    longitude,
+    city,
+    id,
+  }: WidgetConfig) => {
     try {
-      // Check if we have saved coordinates for this city
-      const savedWidget = widgets.find((w) => w.id === widgetId);
+      const [currentWeather, forecastWeather] = await Promise.all([
+        fetchCurrentWeatherData(latitude, longitude),
+        fetchForecastWeatherData(latitude, longitude),
+      ]);
 
-      if (!savedWidget) return;
-
-      // Find this city in our existing weather data to get coordinates
-      const existingData = Object.values(weatherData).find(
-        (data) => data.city.toLowerCase() === city.toLowerCase()
-      );
-
-      if (existingData) {
-        let latitude = DEFAULT_LOCATION.lat;
-        let longitude = DEFAULT_LOCATION.lon;
-
-        // Try to find the corresponding widget that might have the coordinates
-        const widgetWithCoords = widgets.find(
-          (w) =>
-            w.city.toLowerCase() === city.toLowerCase() &&
-            w.latitude !== undefined &&
-            w.longitude !== undefined
-        );
-
-        if (widgetWithCoords) {
-          latitude = widgetWithCoords.latitude || latitude;
-          longitude = widgetWithCoords.longitude || longitude;
-        }
-
-        const [currentWeather, forecastWeather] = await Promise.all([
-          fetchCurrentWeatherData(latitude, longitude),
-          fetchForecastWeatherData(latitude, longitude),
-        ]);
-
-        setWeatherData((prev) => ({
-          ...prev,
-          [widgetId]: transformWeatherData(
-            currentWeather,
-            forecastWeather,
-            city
-          ),
-        }));
-      } else {
-        // Default to Singapore coordinates if we can't find any data
-        // In a real app, we'd use the geo API to get the coordinates
-        const [currentWeather, forecastWeather] = await Promise.all([
-          fetchCurrentWeatherData(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon),
-          fetchForecastWeatherData(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon),
-        ]);
-
-        setWeatherData((prev) => ({
-          ...prev,
-          [widgetId]: transformWeatherData(
-            currentWeather,
-            forecastWeather,
-            city
-          ),
-        }));
-      }
+      setWeatherData((prev) => ({
+        ...prev,
+        [id]: transformWeatherData(currentWeather, forecastWeather, city),
+      }));
     } catch (error) {
       console.error(`Failed to refresh weather data for ${city}:`, error);
       toast({
@@ -185,7 +112,7 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
         }));
         const widget = widgets.find((w) => w.id === widgetId);
         if (widget) {
-          await refreshWeatherDataForWidget(widget.id, widget.city);
+          await refreshWeatherDataForWidget(widget);
           toast({
             title: "Weather Updated",
             description: `Weather data for ${widget.city} has been refreshed.`,
@@ -195,9 +122,7 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
         // Refresh all widgets
         setIsLoading(true);
         await Promise.all(
-          widgets.map((widget) =>
-            refreshWeatherDataForWidget(widget.id, widget.city)
-          )
+          widgets.map((widget) => refreshWeatherDataForWidget(widget))
         );
         toast({
           title: "Weather Updated",

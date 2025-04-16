@@ -73,9 +73,7 @@ export function CitySearch({ widgets }: CitySearchProps) {
         location.lon,
         location.country
       );
-      setQuery("");
-      setResults([]);
-      setIsDialogOpen(false);
+      toggleDialog();
     } catch (error) {
       console.error("Error adding city:", error);
       toast({
@@ -86,15 +84,21 @@ export function CitySearch({ widgets }: CitySearchProps) {
     }
   };
 
+  const toggleDialog = () => {
+    setQuery("");
+    setResults([]);
+    setIsDialogOpen((state) => !state);
+  };
+
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={toggleDialog}>
       <DialogTrigger asChild>
         <Button className="w-full bg-blue-500 text-white hover:bg-blue-400">
           <Search className="h-4 w-4 mr-2" />
           {widgets?.length === 0 ? "Search and add city" : "Add city"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="flex flex-col sm:max-w-md w-full h-full sm:h-auto sm:rounded-lg">
         <DialogHeader>
           <DialogTitle>Add Weather Widget</DialogTitle>
           <DialogDescription>
