@@ -1,54 +1,47 @@
-# React + TypeScript + Vite
+# Welcome to your Weather App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project info
 
-Currently, two official plugins are available:
+**URL**: https://wheather-app-omega-sooty.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features:
 
-## Expanding the ESLint configuration
+- Include a search field for the user to enter location.
+  ![alt text](public/screenshots/image.png)![alt text](public/screenshots/image-1.png)
+- Display hourly weather forecast for the current day: allow user can scroll horizontally to see the forecast.
+  ![alt text](public/screenshots/image-2.png)
+- Allows the option to show X-day (e.g. 5-day) weather forecast
+  ![alt text](public/screenshots/image-3.png)
+- Have a responsive design and auto re-fresh periodically to get updated data: auto re-fresh periodically 5 minutes.
+  - Desktop: ![alt text](public/screenshots/image-4.png)
+  - Mobile: ![alt text](public/screenshots/image-5.png)
+- Use a weather API of choice (such as open weather map) to fetch the weather data for the location
+- Design the UI as a widget-based dashboard.
+- Allows adding widget by entering the city name, the widget will show the details of current weather and forecast weather for 1-7 days of that city.
+  ![alt text](public/screenshots/image-6.png)![alt text](public/screenshots/image-7.png)
+- Allows deletion of widgets.![alt text](public/screenshots/image-8.png)
+- Allows drag to change the position of the widget on the screen![alt text](public/screenshots/image-9.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## How can I setup project?
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+Follow these steps:
+
+```sh
+
+# Step 1: Install the necessary dependencies.
+npm i
+
+# Step 2: Start the development server with auto-reloading and an instant preview.
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## What technologies are used for this project?
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+This project is built with:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+- API openweathermap
