@@ -36,19 +36,15 @@ function ConfirmDeleteModal({ widget }: { widget: WidgetConfig }) {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={toggleDialog}
-            className="bg-gray-500 text-white hover:bg-gray-400"
-          >
+          <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
             Cancel
           </Button>
           <Button
+            variant="destructive"
             onClick={() => {
               removeWidget(widget.id);
-              toggleDialog();
+              setIsDialogOpen(false);
             }}
-            className="bg-red-500 text-white hover:bg-red-400"
           >
             Delete
           </Button>
