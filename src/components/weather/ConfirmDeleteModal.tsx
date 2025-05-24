@@ -24,7 +24,7 @@ function ConfirmDeleteModal({ widget }: { widget: WidgetConfig }) {
   return (
     <Dialog open={isDialogOpen} onOpenChange={toggleDialog}>
       <DialogTrigger asChild>
-        <Button size="icon" variant="ghost">
+        <Button size="icon" variant="ghost" aria-label="Delete widget">
           <X className="h-4 w-4" />
         </Button>
       </DialogTrigger>
@@ -44,7 +44,10 @@ function ConfirmDeleteModal({ widget }: { widget: WidgetConfig }) {
             Cancel
           </Button>
           <Button
-            onClick={() => removeWidget(widget.id)}
+            onClick={() => {
+              removeWidget(widget.id);
+              toggleDialog();
+            }}
             className="bg-red-500 text-white hover:bg-red-400"
           >
             Delete
