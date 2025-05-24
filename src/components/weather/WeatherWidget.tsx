@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn, formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 interface WeatherWidgetProps {
   widget: WidgetConfig;
@@ -63,13 +64,7 @@ export function WeatherWidget({ widget, data, index }: WeatherWidgetProps) {
                   <GripVertical className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <h2 className="text-lg font-medium">{widget.city}</h2>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => removeWidget(widget.id)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <ConfirmDeleteModal widget={widget} />
               </CardHeader>
               <CardContent className="pb-2 pt-4">
                 <div className="flex flex-col items-center justify-center space-y-4 py-8">
@@ -173,14 +168,7 @@ export function WeatherWidget({ widget, data, index }: WeatherWidgetProps) {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7"
-                  onClick={() => removeWidget(widget.id)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <ConfirmDeleteModal widget={widget} />
               </div>
             </CardHeader>
 
