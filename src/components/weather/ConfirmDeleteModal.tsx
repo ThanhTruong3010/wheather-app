@@ -35,7 +35,7 @@ function ConfirmDeleteModal({ widget }: { widget: WidgetConfig }) {
             Are you sure you want to delete this widget?
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="flex justify-between gap-3 md:gap-0">
           <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
             Cancel
           </Button>
